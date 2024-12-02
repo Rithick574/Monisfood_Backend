@@ -7,9 +7,6 @@ const mongoose = require("mongoose");
 
 const app = express();
 
-console.log('CLIENT_URL:', process.env.CLIENT_URL);
-console.log('CLIENT_URL_2:', process.env.CLIENT_URL_2);
-
 app.use((req, res, next) => {
   console.log('Origin:', req.headers.origin);
   next();
@@ -20,12 +17,22 @@ app.use((req, res, next) => {
 const corsOptions = {
   origin: [process.env.CLIENT_URL, process.env.CLIENT_URL_2],
   credentials: true,
-  methods: "GET, HEAD, PUT, PATCH, POST, DELETE",
-  allowedHeaders: ["Content-Type", "Authorization", "x-access-token"],
+  methods: "GET, HEAD, PUT, PATCH, POST, DELETE,OPTIONS",
 };
 app.use(cors(corsOptions));
 
-app.options("*", cors(corsOptions));
+app.options("*", (req, res) => {
+  const origin = req.headers.origin || "*";
+  res.header("Access-Control-Allow-Origin", origin);
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS"
+  );
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.sendStatus(200);
+});
+
 
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));

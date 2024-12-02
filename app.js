@@ -7,13 +7,25 @@ const mongoose = require("mongoose");
 
 const app = express();
 
+console.log('CLIENT_URL:', process.env.CLIENT_URL);
+console.log('CLIENT_URL_2:', process.env.CLIENT_URL_2);
+
+app.use((req, res, next) => {
+  console.log('Origin:', req.headers.origin);
+  next();
+});
+
+
 // CORS setup
 const corsOptions = {
-  credentials: true,
   origin: [process.env.CLIENT_URL, process.env.CLIENT_URL_2],
+  credentials: true,
   methods: "GET, HEAD, PUT, PATCH, POST, DELETE",
+  allowedHeaders: ["Content-Type", "Authorization", "x-access-token"],
 };
 app.use(cors(corsOptions));
+
+app.options("*", cors(corsOptions));
 
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));

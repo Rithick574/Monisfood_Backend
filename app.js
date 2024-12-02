@@ -8,7 +8,8 @@ const mongoose = require("mongoose");
 const app = express();
 
 app.use((req, res, next) => {
-  console.log('Origin:', req.headers.origin);
+  console.log('Request Origin:', req.headers.origin);
+  console.log('Allowed Origins:', process.env.CLIENT_URL);
   next();
 });
 
@@ -20,19 +21,6 @@ const corsOptions = {
   methods: "GET, HEAD, PUT, PATCH, POST, DELETE,OPTIONS",
 };
 app.use(cors(corsOptions));
-
-app.options("*", (req, res) => {
-  const origin = process.env.CLIENT_URL_2 || "*";
-  console.log("🚀 ~ file: app.js:35 ~ app.options ~ origin:", origin);
-  res.header("Access-Control-Allow-Origin", origin);
-  res.header(
-    "Access-Control-Allow-Methods",
-    "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS"
-  );
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.sendStatus(200);
-});
 
 
 app.use(cookieParser());

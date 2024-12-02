@@ -22,7 +22,8 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.options("*", (req, res) => {
-  const origin = req.headers.origin || "*";
+  const origin = process.env.CLIENT_URL_2 || "*";
+  console.log("🚀 ~ file: app.js:35 ~ app.options ~ origin:", origin);
   res.header("Access-Control-Allow-Origin", origin);
   res.header(
     "Access-Control-Allow-Methods",
